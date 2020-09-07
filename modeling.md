@@ -40,3 +40,28 @@ for store in stores:
     del model, X_train, y_train, X_valid, y_valid
     gc.collect()
     ```
+    
+    
+    ### Plotting feature importances
+    
+    feature_importance_df = pd.DataFrame()
+features = [f for f in data.columns if f != 'sold']
+for filename in os.listdir('/kaggle/working/'):
+    if 'model' in filename:
+        # load model
+        model = joblib.load(filename)
+        store_importance_df = pd.DataFrame()
+        store_importance_df["feature"] = features
+        store_importance_df["importance"] = model.feature_importances_
+        store_importance_df["store"] = filename[5:9]
+        feature_importance_df = pd.concat([feature_importance_df, store_importance_df], axis=0)
+    
+def display_importances(feature_importance_df_):
+    cols = feature_importance_df_[["feature", "importance"]].groupby("feature").mean().sort_values(by="importance", ascending=False)[:20].index
+    best_features = feature_importance_df_.loc[feature_importance_df_.feature.isin(cols)]
+    plt.figure(figsize=(8, 10))
+    sns.barplot(x="importance", y="feature", data=best_features.sort_values(by="importance", ascending=False))
+    plt.title('LightGBM Features (averaged over store predictions)')
+    plt.tight_layout()
+    
+display_importances(feature_importance_df)
