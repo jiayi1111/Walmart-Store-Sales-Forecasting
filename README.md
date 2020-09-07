@@ -84,6 +84,13 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 ## General Steps
 
+### Data manipulation
+
+   1.Fetch the data
+   2.Downcasting
+   
+### EDA 
+
 1. Visual overview: interactive time series plots
    - individual item-level time series- random sample
    - All aggregate sales
@@ -101,6 +108,19 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 4. Summary Statistics
 
+### Feature Engineering
+
+1. Label Encoding
+2. Introduce Lags
+3. Mean Encoding
+4. Rolling Window Stats
+5. Expanding Window Stats
+6. Trends
+7. Save the data
+
+### Modeling and Perdiction
+
+
 5. Modeling
    - Train/Val split
    - Naive approach
@@ -111,4 +131,6 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
    - Prophet
 
 Loss for each model
+
+
 
