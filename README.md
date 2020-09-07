@@ -264,7 +264,32 @@ df1["weight"] /= 12 # df1 topdowm
 - Mean of previous 10, 20, 30, 40, 50, 60 days
 - Average of same day for all previous weeks
 
-# LeaderBoard Result (Top 36%)
+
+
+### 3. Infer round truth values, and weights for all the higher level series by aggregating (bu+td)
+
+### 4. Calculalte RMSSE for all series using the equation
+
+```python
+
+h = 28
+n = 1885
+def rmsse(ground_truth, forecast, train_series, axis=1):
+    # assuming input are numpy array or matrices
+    assert axis == 0 or axis == 1
+    assert type(ground_truth) == np.ndarray and type(forecast) == np.ndarray and type(train_series) == np.ndarray
+    
+    if axis == 1:
+        # using axis == 1 we must guarantee these are matrices and not arrays
+        assert ground_truth.shape[1] > 1 and forecast.shape[1] > 1 and train_series.shape[1] > 1
+    
+    numerator = ((ground_truth - forecast)**2).sum(axis=axis)
+    if axis == 1:
+        denominator = 1/(n-1) * ((train_series[:, 1:] - train_series[:, :-1]) ** 2).sum(axis=axis)
+    else:
+        denominator = 1/(n-1) * ((train_series[1:] - train_series[:-1]) ** 2).sum(axis=axis)
+    return (1/h * numerator/denominator) ** 0.5
+ ```
 
 <img src = "http://i63.tinypic.com/14ccuv6.jpg" /img>
 
