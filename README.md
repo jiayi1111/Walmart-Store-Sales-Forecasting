@@ -1,13 +1,4 @@
-# Walmart-Store-Sales-Forecasting
-
-***
-### Can you automatically suggest product prices to online sellers?
-
-**Product pricing gets even harder at scale**, considering just how many products are sold online. Clothing has strong seasonal pricing trends and is heavily influenced by brand names, while electronics have fluctuating prices based on product specs.
-
-**Mercari**, Japan’s biggest community-powered shopping app, knows this problem deeply. They’d like to offer pricing suggestions to sellers, but this is tough because their sellers are enabled to put just about anything, or any bundle of things, on Mercari's marketplace.
-
-The objective of the forecasting project is to advance the theory and practice of most accurate point forecastes and uncertainty distribution by identifying the methods that provide the unit sales of various products of different selling volumnes and prices for a horizon of 28 days that are organized in a hierarchical fashion, which contributes more valuable for the company.
+# Walmart-Store-Sales-Forecasting Project
 
 **Goal**
 The objective of the forecasting project is to advance the theory and practice of most accurate point forecastes and uncertainty distribution by identifying the methods that provide the unit sales of various products of different selling volumnes and prices for a horizon of 28 days that are organized in a hierarchical fashion, which contributes more valuable for the company.
@@ -66,38 +57,7 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 **Source:** https://www.kaggle.com/c/mercari-price-suggestion-challenge
 
-<img src = "https://cdn.dribbble.com/users/56196/screenshots/2281553/mobile-dribbble.gif"/>
 
-# Representing and Mining Text
-***
-Since, text is the most **unstructured** form of all the available data, various types of noise are present in it and the data is not readily analyzable without any pre-processing. The entire process of cleaning and standardization of text, making it noise-free and ready for analysis is known as **text pre-processing**.
-
-### Fundamental Concepts 
-
-The importance of constructing mining-friendly data representations; Representation of text for data mining. 
-
-### Important Terminologies
-- **Document**: One piece of text. It could be a single sentence, a paragraph, or even a full page report. 
-- **Tokens**: Also known as terms. It is simply just a word. So many tokens form a document. 
-- **Corpus**: A collection of documents. 
-- **Term Frequency (TF)**: Measures how often a term is in a single document
-- **Inverse Document Frequency (IDF)**: distribution of a term over a corpus
-
-### Pre-Processing Techniques
-- **Stop Word Removal:** stop words are terms that have little no meaning in a given text. Think of it as the "noise" of data. Such terms include the words, "the", "a", "an", "to", and etc...
-- **Bag of Words Representation: ** treats each word as a feature of the document
-
-- **TFIDF**: a common value representation of terms. It boosts or weighs words that have low occurences. For example, if the word "play" is common, then there is little to no boost. But if the word "mercari" is rare, then it has more boosts/weight. 
-
-- **N-grams**: Sequences of adjacent words as terms. For example, since a word by itself may have little to no value, but if you were to put two words together and analyze it as a pair, then it might add more meaning. 
-
-- **Stemming and Lemmatization**:
-
-- **Named Entity Extraction**: A pre-processing technique used to know  when word sequences constitute proper names. Example, "HP", "H-P", and "Hewlett-Packard" all represent the Hewlett-Packard Corporation.
-
-- **Topic Models**: A type of model that represents a set of topics from a sequence of words. 
-
-<img src="http://www.des1gnon.com/wp-content/uploads/2017/02/Des1gn-ON-Tendencias-no-Design-em-2017-icones-03.gif"/>
 
 # MileStone Report 
 ***
@@ -174,6 +134,59 @@ from sklearn.preprocessing import LabelBinarizer
 # Ridge - Reduces multicollinearity in regression. Applies L2 Regularization
 from sklearn.linear_model import Ridge
 ```
+
+## load libraries
+
+# general data manipulation
+import pandas as pd
+import numpy as np
+from pandasql import sqldf
+pysqldf = lambda q: sqldf(q, globals())
+
+# general visualization
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
+from matplotlib.gridspec import GridSpec
+import plotly
+from plotly import __version__
+from plotly.offline import download_plotlyjs, plot, iplot
+import chart_studio.plotly as py
+import plotly.express as px
+import plotly.graph_objs as go
+import plotly.offline as pyo
+import plotly.figure_factory as ff
+plotly.offline.init_notebook_mode()
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+
+# forecast + modeling
+from scipy import stats
+from scipy.special import boxcox1p
+import fbprophet
+Prophet = fbprophet.Prophet
+from fbprophet import Prophet
+from fbprophet.diagnostics import cross_validation
+from fbprophet.diagnostics import performance_metrics
+from fbprophet.diagnostics import performance_metrics
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import ExtraTreesRegressor, RandomForestRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.svm import SVR
+from sklearn.feature_selection import RFE
+from sklearn.neural_network import MLPRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import StandardScaler
+
+
+import warnings
+warnings.filterwarnings("ignore")
+
+from tqdm import tqdm
+
 
 # Import Train / Test Data
 ***
