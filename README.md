@@ -1,12 +1,12 @@
 # Walmart-Store-Sales-Forecasting Project
 
-**Goal**
+## Goal
 The objective of the forecasting project is to advance the theory and practice of most accurate point forecastes and uncertainty distribution by identifying the methods that provide the unit sales of various products of different selling volumnes and prices for a horizon of 28 days that are organized in a hierarchical fashion, which contributes more valuable for the company.
 
-**Data Summary**
+## Data Summary
 The unit sales of **3,049 products** in **3 product categories** (Hobbies, Foods and Household) and **7 product departments** across **10 stores located in three states( CA, TX and WI )**.
 
-### Dataset Features
+### Dataset Dictionary
 #### File 1: calendar.csv
 Contains the dates on which products are sold. The dates are in a yyyy/dd/mm format.
 
@@ -55,7 +55,7 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 **Work on supply and demand**
 
-**Source:** https://www.kaggle.com/c/mercari-price-suggestion-challenge
+**Source:** https://www.kaggle.com/c/m5-forecasting-accuracy
 
 
 
@@ -94,7 +94,6 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 # Import Packages
 ***
-
 
 ```python
 # general data manipulation
