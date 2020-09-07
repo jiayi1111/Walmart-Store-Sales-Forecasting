@@ -111,3 +111,13 @@ df['avg_sold'] = df.groupby(['id', 'item_id', 'dept_id', 'cat_id', 'store_id', '
 df['selling_trend'] = (df['daily_avg_sold'] - df['avg_sold']).astype(np.float16)
 df.drop(['daily_avg_sold','avg_sold'],axis=1,inplace=True)
 ```
+
+## Save the data
+
+Now since all the new features are created, let's save the data so that it can be trained separately.Also, lags introduce a lot of Null values, so I'll remove data for first 35 days as I have introduced lags till 36 days.
+
+```python
+df.to_pickle('data.pkl')
+del df
+gc.collect();
+```
