@@ -97,52 +97,15 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 
 ```python
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import gc
-```
-
-
-```python
-from string import punctuation
-```
-
-
-```python
-# vstack - adds rows, hstack - adds columns
-# csr_matrix - used to handle sparse matrix
-from scipy.sparse import vstack, hstack, csr_matrix
-```
-
-
-```python
-# CountVectorizer - Simply, counts word frequencies 
-# TFIDF - More importance/weights on "rare" words. Less importance/weights on "frequent" words
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-```
-
-
-```python
-# LabelBinarizer - Converts labels into numerical representation "G,B,R" -> [1,2,3]
-from sklearn.preprocessing import LabelBinarizer
-```
-
-
-```python
-# Ridge - Reduces multicollinearity in regression. Applies L2 Regularization
-from sklearn.linear_model import Ridge
-```
-
-## load libraries
-
 # general data manipulation
 import pandas as pd
 import numpy as np
 from pandasql import sqldf
 pysqldf = lambda q: sqldf(q, globals())
+```
 
+
+```python
 # general visualization
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -160,7 +123,10 @@ plotly.offline.init_notebook_mode()
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+```
 
+
+```python
 # forecast + modeling
 from scipy import stats
 from scipy.special import boxcox1p
@@ -180,127 +146,80 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
+```
 
 
+```python
 import warnings
 warnings.filterwarnings("ignore")
 
 from tqdm import tqdm
-
-
+```
+## Simple "Memory profilers" to see memory usage
+```python
+def get_memory_usage():
+    return np.round(psutil.Process(os.getpid()).memory_info()[0]/2.**30, 2) 
+        
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+```
 # Import Train / Test Data
-***
-
 
 ```python
-# Create training set
-train = pd.read_csv('C:/Users/Randy/Desktop/training/train.tsv', sep = '\t')
-train.head()
+## Memory Reducer
+# :df pandas dataframe to reduce size             # type: pd.DataFrame()
+# :verbose                                        # type: bool
+def reduce_mem_usage(df, verbose=True):
+    numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+    start_mem = df.memory_usage().sum() / 1024**2    
+    for col in df.columns:
+        col_type = df[col].dtypes
+        if col_type in numerics:
+            c_min = df[col].min()
+            c_max = df[col].max()
+            if str(col_type)[:3] == 'int':
+                if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
+                    df[col] = df[col].astype(np.int8)
+                elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
+                       df[col] = df[col].astype(np.int16)
+                elif c_min > np.iinfo(np.int32).min and c_max < np.iinfo(np.int32).max:
+                    df[col] = df[col].astype(np.int32)
+                elif c_min > np.iinfo(np.int64).min and c_max < np.iinfo(np.int64).max:
+                    df[col] = df[col].astype(np.int64)  
+            else:
+                if c_min > np.finfo(np.float16).min and c_max < np.finfo(np.float16).max:
+                    df[col] = df[col].astype(np.float16)
+                elif c_min > np.finfo(np.float32).min and c_max < np.finfo(np.float32).max:
+                    df[col] = df[col].astype(np.float32)
+                else:
+                    df[col] = df[col].astype(np.float64)    
+    end_mem = df.memory_usage().sum() / 1024**2
+    if verbose: print('Mem. usage decreased to {:5.2f} Mb ({:.1f}% reduction)'.format(end_mem, 100 * (start_mem - end_mem) / start_mem))
+    return df
 ```
-
-
-
-
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>train_id</th>
-      <th>name</th>
-      <th>item_condition_id</th>
-      <th>category_name</th>
-      <th>brand_name</th>
-      <th>price</th>
-      <th>shipping</th>
-      <th>item_description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>MLB Cincinnati Reds T Shirt Size XL</td>
-      <td>3</td>
-      <td>Men/Tops/T-shirts</td>
-      <td>NaN</td>
-      <td>10.0</td>
-      <td>1</td>
-      <td>No description yet</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-      <td>Razer BlackWidow Chroma Keyboard</td>
-      <td>3</td>
-      <td>Electronics/Computers &amp; Tablets/Components &amp; P...</td>
-      <td>Razer</td>
-      <td>52.0</td>
-      <td>0</td>
-      <td>This keyboard is in great condition and works ...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2</td>
-      <td>AVA-VIV Blouse</td>
-      <td>1</td>
-      <td>Women/Tops &amp; Blouses/Blouse</td>
-      <td>Target</td>
-      <td>10.0</td>
-      <td>1</td>
-      <td>Adorable top with a hint of lace and a key hol...</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>3</td>
-      <td>Leather Horse Statues</td>
-      <td>1</td>
-      <td>Home/Home Décor/Home Décor Accents</td>
-      <td>NaN</td>
-      <td>35.0</td>
-      <td>1</td>
-      <td>New with tags. Leather horses. Retail for [rm]...</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>4</td>
-      <td>24K GOLD plated rose</td>
-      <td>1</td>
-      <td>Women/Jewelry/Necklaces</td>
-      <td>NaN</td>
-      <td>44.0</td>
-      <td>0</td>
-      <td>Complete with certificate of authenticity</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
 ```python
-# Create testing set
-test = pd.read_csv('C:/Users/Randy/Desktop/training/test.tsv', sep = '\t',engine = 'python')
-```
 
+def read_data(PATH):
+    print('Reading files...')
+    calendar = pd.read_csv(f'{PATH}/calendar.csv',index_col='date',parse_dates=True)
+    calendar = reduce_mem_usage(calendar)
+    print('Calendar has {} rows and {} columns'.format(calendar.shape[0], calendar.shape[1]))
+    sell_prices = pd.read_csv(f'{PATH}/sell_prices.csv')
+    sell_prices = reduce_mem_usage(sell_prices)
+    print('Sell prices has {} rows and {} columns'.format(sell_prices.shape[0], sell_prices.shape[1]))
+    sales_train_validation = pd.read_csv(f'{PATH}/sales_train_validation.csv')
+    print('Sales train validation has {} rows and {} columns'.format(sales_train_validation.shape[0], sales_train_validation.shape[1]))
+    submission = pd.read_csv(f'{PATH}/sample_submission.csv')
+    sales_train_evaluation = pd.read_csv(f'{PATH}/sales_train_evaluation.csv')
+    print('sales_train_evaluation has {} rows and {} columns'.format(sales_train_evaluation.shape[0], sales_train_evaluation.shape[1]))
+   
+    return calendar, sell_prices, sales_train_validation, submission, sales_train_evaluation
 
-```python
-# Create log price variable (Transformation)
-y = np.log1p(train['price'])
+calendar, sell_prices, sales_train_validation, submission, sales_train_evaluation = read_data("/Users/xujiayi/Desktop/walmart_forecasting")
 ```
 
 # Combine Test and Train Set
