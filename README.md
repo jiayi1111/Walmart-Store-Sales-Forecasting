@@ -243,11 +243,27 @@ for day in tqdm(range(1858, 1886)):
 ```Python
 # add up all the new columns created horizontally for each of the level 12 series
 sales_train_validation["dollar_sales"] = sales_train_validation[[c for c in sales_train_validation.columns if c.find("unit_sales")==0]].sum(axis=1)
+
 # drop ennecessay columns to save space
 sales_train_validation.drop(columns=[c for c in sales_train_validation.columns if c.find("unit_sales")==0], inplace=True)
 
+# get the weight
+sales_train_validation['weight'] = sales_train_validation['dollar_sales']/ sales_train_validation['dollar_sales'].sum()
 
+sales_train_validation.drop(columns=["dollar_sales"], inplace=True)
+df1 = sales_train_validation
+df = sales_train_validation
+
+df1["weight"] /= 12 # df1 topdowm
 ```
+
+### 2 .Use the naive logic to make forecasts for each of the level 12 series (bu)
+- All 0s
+- Average through all history
+- Same as previous 28 days
+- Mean of previous 10, 20, 30, 40, 50, 60 days
+- Average of same day for all previous weeks
+
 # LeaderBoard Result (Top 36%)
 
 <img src = "http://i63.tinypic.com/14ccuv6.jpg" /img>
