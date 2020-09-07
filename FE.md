@@ -76,7 +76,9 @@ df['store_cat_dept_sold_avg'] = df.groupby(['store_id','cat_id','dept_id'])['sol
 ```
 ## Rolling Window Statistics
 
-This method is called the rolling window method because the window would be different for every data point.
+Here’s an awesome gif that explains this idea in a wonderfully intuitive way:
+![](https://cdn.analyticsvidhya.com/wp-content/uploads/2019/11/3hotmk.gif)
+`This method is called the rolling window method because the window would be different for every data point.`
 
 I'll be calculating weekly rolling avearge of the items sold. More features like rolling min, max or sum can also be calculated. Also, same features can be calculated for revenue as well.
 
