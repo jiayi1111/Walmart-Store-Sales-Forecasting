@@ -223,19 +223,31 @@ def read_data(PATH):
 calendar, sell_prices, sales_train_validation, submission, sales_train_evaluation = read_data("/Users/xujiayi/Desktop/walmart_forecasting")
 ```
 
-# Combine Test and Train Set
-***
+# Data Preprocessing
 
 
 ```python
-calendar.info()
+calendar["d"]=calendar["d"].apply(lambda x: int(x.split("_")[1]))
+sell_prices["id"] = sell_prices["item_id"] + "_" + sell_prices["store_id"] + "_validation"
 
 ```
+## 1.Calculate weight for the level 12 series¶
 ```python
+for day in tqdm(range(1858, 1886)):
+    wk_id = list(calendar[calendar["d"]==day]["wm_yr_wk"])[0]
+    wk_price_df = sell_prices[sell_prices["wm_yr_wk"]==wk_id]
+    sales_train_validation = sales_train_validation.merge(wk_price_df[["sell_price", "id"]], on=["id"], how='inner')
+    sales_train_validation["unit_sales_" + str(day)] = sales_train_validation["sell_price"] * sales_train_validation["d_" + str(day)]
+    sales_train_validation.drop(columns=["sell_price"], inplace=True)
+```
+```Python
+# add up all the new columns created horizontally for each of the level 12 series
+sales_train_validation["dollar_sales"] = sales_train_validation[[c for c in sales_train_validation.columns if c.find("unit_sales")==0]].sum(axis=1)
+# drop ennecessay columns to save space
+sales_train_validation.drop(columns=[c for c in sales_train_validation.columns if c.find("unit_sales")==0], inplace=True)
+
 
 ```
-
-
 # LeaderBoard Result (Top 36%)
 
 <img src = "http://i63.tinypic.com/14ccuv6.jpg" /img>
