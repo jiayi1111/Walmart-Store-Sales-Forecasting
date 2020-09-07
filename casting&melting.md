@@ -44,3 +44,8 @@ df = pd.merge(df, prices, on=['store_id','item_id','wm_yr_wk'], how='left')
   ```
 
 
+
+**Make the submission**
+
+If you remember for EDA, feature engineering and training I had melted the provided data from wide format to long format. Now, I have the predictions in long format but the format to be evaluated for the competition is in long format. Therefore, I'll convert it into wide format using `pivot` function in pandas. Below is an image explaining the pivot function.
+<img src='https://pandas.pydata.org/pandas-docs/version/0.25.3/_images/reshaping_pivot.png' style="width:500px;height:300px;">
