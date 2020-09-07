@@ -264,7 +264,31 @@ df1["weight"] /= 12 # df1 topdowm
 - Mean of previous 10, 20, 30, 40, 50, 60 days
 - Average of same day for all previous weeks
 
+#### Mean of history
+```python
+df[[c for c in df.columns if c.find("d_")==0 and int(c.split("_")[1]) <= 1885] +\
+       ["id"]].set_index("id").transpose()
 
+complete_historical_mean_df =\
+    df[[c for c in df.columns if c.find("d_")==0 and int(c.split("_")[1]) <= 1885] +\
+       ["id"]].set_index("id").transpose().mean().reset_index()
+       
+complete_historical_mean_df.head()
+
+# Nothing is always 0
+df[[c for c in df.columns if c.find("d_")==0]].sum(axis=1).min()      
+
+def find_first_non_0(s):
+    assert type(s) == np.ndarray
+    return (s!=0).argmax(axis=0)
+    
+non_0_strt_arr = []
+hist_arr = np.array(df[[c for c in df.columns if c.find("d_")==0]])
+for i in tqdm(range(len(df))):
+    non_0_strt_arr.append(find_first_non_0(hist_arr[i, :]))
+    
+df.head(1)
+```
 
 ### 3. Infer round truth values, and weights for all the higher level series by aggregating (bu+td)
 
