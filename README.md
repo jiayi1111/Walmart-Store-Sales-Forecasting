@@ -101,5 +101,14 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 4. Summary Statistics
 
+5. Modeling
+   - Train/Val split
+   - Naive approach
+   - Moving average
+   - Holt linear
+   - Exponential smoothing
+   - ARIMA
+   - Prophet
 
+Loss for each model
 
