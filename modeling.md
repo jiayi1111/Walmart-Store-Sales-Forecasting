@@ -9,6 +9,7 @@ valid_preds = valid['sold']
 ```
 
 ```python
+
 #Get the store ids
 stores = sales.store_id.cat.codes.unique().tolist()
 for store in stores:
@@ -39,10 +40,12 @@ for store in stores:
     joblib.dump(model, filename)
     del model, X_train, y_train, X_valid, y_valid
     gc.collect()
-    ```
+```
     
     
-    ### Plotting feature importances
+   ### Plotting feature importances
+    
+    ```python
     
     feature_importance_df = pd.DataFrame()
 features = [f for f in data.columns if f != 'sold']
@@ -65,3 +68,5 @@ def display_importances(feature_importance_df_):
     plt.tight_layout()
     
 display_importances(feature_importance_df)
+
+```
