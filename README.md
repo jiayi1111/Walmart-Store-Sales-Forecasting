@@ -122,6 +122,7 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 
 5. Modeling
+
    - Train/Val split
    - Naive approach
    - Moving average
@@ -129,6 +130,7 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
    - Exponential smoothing
    - ARIMA
    - Prophet
+   - LGBM
 
 Loss for each model
 
