@@ -64,7 +64,6 @@ In this competition, we need to forecast the sales for [d_1942 - d_1969]. These 
 
 **Work on supply and demand**
 
-**Source:** https://www.kaggle.com/c/m5-forecasting-accuracy
 
 
 
